@@ -15,9 +15,9 @@ const Login = (props) => {
 
     // En caso de que el usuario o el password no exista 
     useEffect(() => {
-        // if (autenticado) {
-        //     props.history.push('/proyectos');
-        // }
+        if (autenticado) {
+            props.history.push('/proyectos');
+        }
         if (mensaje) {
             mostrarAlerta(mensaje.msg, mensaje.categoria);
         }
@@ -46,6 +46,7 @@ const Login = (props) => {
         //validar el formulario
         if(email.trim() === '' || password.trim() === '') {
             mostrarAlerta('Todos los campos son obligatorios', 'alerta-error');
+            return;
         }
 
         // pasarlo al action
@@ -97,7 +98,7 @@ const Login = (props) => {
 
                 </form>
 
-                < Link to = {'/nueva-cuenta'} className="enlace-cuenta" id="enlace-style">
+                < Link to = {'/nueva-cuenta'} className="enlace-cuenta" id="enlace-style" >
                     Registrarse
                 </Link>
 

@@ -19,7 +19,8 @@ const AuthState = props => {
         token: localStorage.getItem('token'),
         autenticado: null,
         usuario: null,
-        mensaje: null
+        mensaje: null,
+        cargando: true
     }
 
     const [state, dispatch] = useReducer( authReducer, initialState);
@@ -40,7 +41,7 @@ const AuthState = props => {
 
         } catch (error) {
 
-            console.log(error.response);
+            // console.log(error.response);
             const alerta = {
                 msg: error.response.msg,
                 categoria: 'alerta-error'
@@ -67,7 +68,7 @@ const AuthState = props => {
             });
             
         } catch (error) {
-            console.log(error.response);
+            // console.log(error.response);
             dispatch({
                 type: LOGIN_ERROR
             });
@@ -78,11 +79,17 @@ const AuthState = props => {
     const iniciarSesion = async datos => {
         try {
             const respuesta = await clienteAxios.post('/api/auth', datos);
-            console.log(respuesta);
+
+            dispatch({
+                type: LOGIN_EXITOSO,
+                payload: respuesta.data
+            });
+
+            //obtener el usuario una vez este logeado
+            usuarioAutenticado();
 
         } catch (error) {
-            console.log(error.response.data.msg);
-
+            
             const alerta = {
                 msg: error.response.data.msg,
                 categoria: 'alerta-error'
@@ -95,6 +102,12 @@ const AuthState = props => {
         }
     }
 
+    //cierra la sesion del usuario
+    const cerrarSesion = () => {
+        dispatch({
+            type: CERRAR_SESION
+        });
+    }
 
     return(
         <authContext.Provider
@@ -103,8 +116,11 @@ const AuthState = props => {
                 autenticado: state.autenticado,
                 usuario: state.usuario,
                 mensaje: state.mensaje,
+                cargando: state.cargando,
                 registrarUsuario,
-                iniciarSesion
+                iniciarSesion,
+                usuarioAutenticado,
+                cerrarSesion
             }}
         >
             {props.children}
