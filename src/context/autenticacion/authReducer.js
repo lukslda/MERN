@@ -18,6 +18,7 @@ export default (state, action) => {
                 autenticado: true,
                 mensaje: null
             }
+            
         case LOGIN_ERROR:
         case REGISTRO_ERROR:
             localStorage.removeItem('token');
