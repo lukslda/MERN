@@ -19,7 +19,6 @@ export default (state, action) => {
             }
 
         case OBTENER_PROYECTOS:
-            console.log(action.payload);
             return {
                 ...state,
                 proyectos: action.payload

@@ -7,7 +7,6 @@ import {
     AGREGAR_TAREA,
     VALIDAR_TAREA,
     ELIMINAR_TAREA,
-    ESTADO_TAREA,
     TAREA_ACTUAL,
     ACTUALIZAR_TAREA,
     LIMPIAR_TAREA,
@@ -63,19 +62,29 @@ const TareaState = props => {
     }
 
     // eliminar las tareas por su id
-    const eliminarTarea = id => {
-        dispatch({
-            type: ELIMINAR_TAREA,
-            payload: id
-        })
+    const eliminarTarea = async (id, proyecto)=> {
+        try {
+            await clienteAxios.delete(`/api/tareas/${id}`, {params: {proyecto}});
+            dispatch({
+                type: ELIMINAR_TAREA,
+                payload: id
+            })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    // cambia el estado de cada tarea
-    const cambiarEstadoTarea = tarea => {
-        dispatch({
-            type: ESTADO_TAREA,
-            payload: tarea
-        })
+    // actualizar tareas (guardar cambios / editar)
+    const actualizarTarea = async tarea => {
+        try {
+            const resultado = await clienteAxios.put(`/api/tareas/${tarea._id}`, tarea);
+            dispatch({
+                type: ACTUALIZAR_TAREA,
+                payload : resultado.data.tarea
+            });
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     // Extrae una tarea para edicion
@@ -83,14 +92,6 @@ const TareaState = props => {
         dispatch({
             type: TAREA_ACTUAL,
             payload: tarea
-        })
-    }
-
-    // actualizar tareas (guardar cambios)
-    const actualizarTarea = tarea => {
-        dispatch({
-            type: ACTUALIZAR_TAREA,
-            payload : tarea
         })
     }
 
@@ -111,7 +112,6 @@ const TareaState = props => {
                 agregarTarea,
                 validarTarea,
                 eliminarTarea,
-                cambiarEstadoTarea,
                 guardarTareaActual,
                 actualizarTarea,
                 limpiarTarea,
